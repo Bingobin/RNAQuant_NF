@@ -1,0 +1,19 @@
+# Nextflow
+work/
+results/
+.nextflow/
+.nextflow*
+
+# Reports
+*trace.txt
+*timeline.html
+*report.html
+*dag.html
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
