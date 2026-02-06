@@ -7,6 +7,18 @@ params.aligner = params.aligner ?: 'star'
 params.bam_list = params.bam_list ?: null
 params.skip_align = params.skip_align ?: false
 
+// Detect CSV/TSV separator from first non-empty line
+def detectSep = { String path ->
+    def f = file(path)
+    def line = f.readLines().find { it?.trim() }
+    if (!line) return '\t'
+    def hasTab = line.contains('\t')
+    def hasComma = line.contains(',')
+    if (hasTab && !hasComma) return '\t'
+    if (hasComma && !hasTab) return ','
+    return '\t'
+}
+
 // Reference selection (hsa/mmu) is defined in `nextflow.config` under `params.references`.
 // The script selects the proper reference entry at runtime.
 
@@ -46,16 +58,18 @@ workflow {
             System.exit(1)
         }
 
+        def bam_sep = detectSep(params.bam_list)
         Channel.fromPath(params.bam_list)
-        .splitCsv(header:true, sep: '\t')
+        .splitCsv(header:true, sep: bam_sep)
         .map{["${it.ID}" , file("${it.BAM}")]}
         .set{ch_bam_in}
 
         ch_bam = PREP_BAM(ch_bam_in).bam
         ch_count = COUNT(ch_bam)
     } else {
+        def input_sep = detectSep(params.input)
         Channel.fromPath(params.input)
-        .splitCsv(header:true, sep: '\t')
+        .splitCsv(header:true, sep: input_sep)
         .map{["${it.ID}" ,["${it.R1}", "${it.R2}"]]}
         .set{ch_sample}
 
