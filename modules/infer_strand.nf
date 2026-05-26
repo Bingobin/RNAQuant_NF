@@ -2,7 +2,7 @@ process INFER_STRAND {
     cpus 2
 
     tag "infer_experiment.py in $ID"
-    publishDir "$params.outdir/count", pattern: "${ID}.strand.result.txt", mode: 'copy'
+    publishDir "$params.outdir/count", pattern: "*.strand.result.txt", mode: 'copy'
 
     input:
     tuple val(ID), path(BAM), path(BAI)

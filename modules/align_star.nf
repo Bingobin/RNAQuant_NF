@@ -1,7 +1,7 @@
 process ALIGN_STAR {
     tag "STAR  align in $ID"
-    publishDir "$params.outdir/align", pattern: "${ID}_{Log.*,SJ.*}", mode: 'copy'
-    publishDir "$params.outdir/align", pattern: "${ID}_Aligned.*", mode: 'copy'
+    publishDir "$params.outdir/align", pattern: "*_{Log.*,SJ.*}", mode: 'copy'
+    publishDir "$params.outdir/align", pattern: "*_Aligned.*", mode: 'copy'
 
     input:
     tuple val(ID), path(fastq)

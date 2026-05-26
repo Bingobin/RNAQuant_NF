@@ -1,6 +1,6 @@
 process FeatureCounts {
     tag "FeatrueCounts in $ID"
-    publishDir "$params.outdir/count", pattern: "${ID}.*", mode: 'copy'
+    publishDir "$params.outdir/count", pattern: "*", mode: 'copy'
 
     input:
     tuple val(ID), path(BAM), path(BAI), val(strand)

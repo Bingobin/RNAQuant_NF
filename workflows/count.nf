@@ -13,5 +13,6 @@ workflow COUNT {
     counts = ch_count.counts
     summary = ch_count.summary
     out = ch_count.out
-    strand = ch_strand
+    strand = ch_strand.strand
+    strand_result = ch_strand.result
 }

@@ -3,12 +3,9 @@
 params.input = "$projectDir/bin/samplesheet_test.tsv"
 params.project = "RNAseq"
 params.outdir = "results"
-params.aligner = params.aligner ?: 'star'
-params.bam_list = params.bam_list ?: null
-params.skip_align = params.skip_align ?: false
 
-// Detect CSV/TSV separator from first non-empty line
-def detectSep = { String path ->
+// Detect CSV/TSV separator from first non-empty line.
+def detectSep(String path) {
     def f = file(path)
     def line = f.readLines().find { it?.trim() }
     if (!line) return '\t'
@@ -22,28 +19,6 @@ def detectSep = { String path ->
 // Reference selection (hsa/mmu) is defined in `nextflow.config` under `params.references`.
 // The script selects the proper reference entry at runtime.
 
-// Resolve selected reference configuration
-def refKey = params.get('ref','hsa')
-def ref = params.references ? params.references[refKey] : null
-if( !ref ) {
-    log.error "Reference with key '${refKey}' not found in params.references.\nPlease set params.ref to one of: ${params.references?.keySet() ?: '[]'}"
-    System.exit(1)
-}
-params.ref_data = ref
-
-log.info """
-    R N A S E Q - N F   P I P E L I N E
-    ===================================
-    selected_ref  :  ${refKey}
-    gtf           :  ${params.ref_data.gtf}
-    hisat_index   :  ${params.ref_data.hisat_index}
-    star_index    :  ${params.ref_data.star_index}
-    gene_lens     :  ${params.ref_data.gene_lens}
-    input         :  ${params.input}
-    outdir        :  ${params.outdir}
-    aligner       :  ${params.aligner}
-    """.stripIndent(true)
-
 include { QC } from './workflows/qc'
 include { ALIGN } from './workflows/align'
 include { COUNT } from './workflows/count'
@@ -52,6 +27,28 @@ include { REPORT } from './workflows/report'
 include { PREP_BAM } from './workflows/prep_bam'
 
 workflow {
+    main:
+    def refKey = params.get('ref','hsa')
+    def ref = params.references ? params.references[refKey] : null
+    if( !ref ) {
+        log.error "Reference with key '${refKey}' not found in params.references.\nPlease set params.ref to one of: ${params.references?.keySet() ?: '[]'}"
+        System.exit(1)
+    }
+    params.ref_data = ref
+
+    log.info """
+        R N A S E Q - N F   P I P E L I N E
+        ===================================
+        selected_ref  :  ${refKey}
+        gtf           :  ${params.ref_data.gtf}
+        hisat_index   :  ${params.ref_data.hisat_index}
+        star_index    :  ${params.ref_data.star_index}
+        gene_lens     :  ${params.ref_data.gene_lens}
+        input         :  ${params.input}
+        outdir        :  ${params.outdir}
+        aligner       :  ${params.aligner}
+        """.stripIndent(true)
+
     if (params.skip_align) {
         if (!params.bam_list) {
             log.error "params.skip_align=true requires --bam_list <tsv> with columns: ID, BAM"
@@ -82,8 +79,7 @@ workflow {
     MERGE(ch_count.counts, input_file)
 
     REPORT(ch_count.summary)
-}
 
-workflow.onComplete {
+    onComplete:
     log.info ( workflow.success ? "\nDone! See results --> $params.outdir\n" : "Oops.. someting went wrong" )
 }
