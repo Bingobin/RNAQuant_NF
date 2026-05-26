@@ -11,7 +11,7 @@ process ALIGN_HISAT2 {
 
     script:
     """
-    hisat2 -p $task.cpus --phred33 --sensitive -I 1 -X 1000 -x ${params.ref_data.hisat_index} -1 ${fastq[0]} -2 ${fastq[1]} 2> ${ID}.Hisat2Genome.MapReadsStat.xls | samtools view -@ $task.cpus -b -S -o ${ID}.bam -
+    hisat2 -p $task.cpus --phred33 --sensitive -I 1 -X 1000 -x ${params.references[params.ref].hisat_index} -1 ${fastq[0]} -2 ${fastq[1]} 2> ${ID}.Hisat2Genome.MapReadsStat.xls | samtools view -@ $task.cpus -b -S -o ${ID}.bam -
     samtools sort -@ $task.cpus -o ${ID}.sorted.bam ${ID}.bam
     samtools index ${ID}.sorted.bam
     rm ${ID}.bam

@@ -12,7 +12,7 @@ process ALIGN_STAR {
 
     script:
     """
-    STAR --runThreadN $task.cpus --genomeDir ${params.ref_data.star_index} --readFilesIn ${fastq[0]} ${fastq[1]} --readFilesCommand zcat --outFileNamePrefix ${ID}_ --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 100 --winAnchorMultimapNmax 100
+    STAR --runThreadN $task.cpus --genomeDir ${params.references[params.ref].star_index} --readFilesIn ${fastq[0]} ${fastq[1]} --readFilesCommand zcat --outFileNamePrefix ${ID}_ --outSAMtype BAM SortedByCoordinate --outFilterMultimapNmax 100 --winAnchorMultimapNmax 100
     samtools index ${ID}_Aligned.sortedByCoord.out.bam
     """
 

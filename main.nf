@@ -34,16 +34,15 @@ workflow {
         log.error "Reference with key '${refKey}' not found in params.references.\nPlease set params.ref to one of: ${params.references?.keySet() ?: '[]'}"
         System.exit(1)
     }
-    params.ref_data = ref
 
     log.info """
         R N A S E Q - N F   P I P E L I N E
         ===================================
         selected_ref  :  ${refKey}
-        gtf           :  ${params.ref_data.gtf}
-        hisat_index   :  ${params.ref_data.hisat_index}
-        star_index    :  ${params.ref_data.star_index}
-        gene_lens     :  ${params.ref_data.gene_lens}
+        gtf           :  ${ref.gtf}
+        hisat_index   :  ${ref.hisat_index}
+        star_index    :  ${ref.star_index}
+        gene_lens     :  ${ref.gene_lens}
         input         :  ${params.input}
         outdir        :  ${params.outdir}
         aligner       :  ${params.aligner}

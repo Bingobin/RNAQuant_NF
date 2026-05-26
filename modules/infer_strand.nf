@@ -13,7 +13,7 @@ process INFER_STRAND {
 
     script:
     """
-    infer_experiment.py -i $BAM -r ${params.ref_data.gene_bed} > ${ID}.strand.result.txt
+    infer_experiment.py -i $BAM -r ${params.references[params.ref].gene_bed} > ${ID}.strand.result.txt
     FWD=\$(cat ${ID}.strand.result.txt | grep "1++,1--,2+-,2-+" | cut -d':' -f2 | tr -d ' ')
     REV=\$(cat ${ID}.strand.result.txt | grep "1+-,1-+,2++,2--" | cut -d':' -f2 | tr -d ' ')
     echo | awk -v f=\$FWD -v r=\$REV '{if (r > 0.6) printf "2"; else if (f > 0.6) printf "1"; else printf "0";}'

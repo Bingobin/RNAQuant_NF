@@ -12,6 +12,6 @@ process FeatureCounts {
 
     script:
     """
-    featureCounts -T $task.cpus -a ${params.ref_data.gtf} -o ${ID}.count -p  --countReadPairs --verbose -g gene_id ${BAM} -s ${strand} -B -C  -t exon 2> ${ID}.count.out
+    featureCounts -T $task.cpus -a ${params.references[params.ref].gtf} -o ${ID}.count -p  --countReadPairs --verbose -g gene_id ${BAM} -s ${strand} -B -C  -t exon 2> ${ID}.count.out
     """
 }
