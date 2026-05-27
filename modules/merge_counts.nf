@@ -16,9 +16,8 @@ process MergeCountMatrix {
     def gene_lens = params.references[params.ref].gene_lens
     """
     merge_count_featureCounts.pl ${INPUT} ./ > ${project}.merge.count.txt
-    perl -i -pe 's/^([^\t]+)\.[0-9]+(\t)/\$1\$2/' ${project}.merge.count.txt
-    awk -F '\t' 'BEGIN { OFS = FS } \$1 !~ /PAR/' ${project}.merge.count.txt > ${project}.merge.count.filtered.txt
-    mv ${project}.merge.count.filtered.txt ${project}.merge.count.txt
+    sed  -i 's/\\.[0-9]\\+\\t/\\t/' ${params.project}.merge.count.txt
+    grep -v "PAR" ${params.project}.merge.count.txt > a && mv a  ${params.project}.merge.count.txt
     count2TPM_FPKM_v2.pl ${project}.merge.count.txt ${gene_lens} ${project}.merge
     """
 }

@@ -35,8 +35,8 @@ while(<IN>){
 }
 close IN;
 
-my $header = join("\t", @sam);
-print "GID\t$header\n";
+my $samples = join("\t", @sam);
+print "GID\t$samples\n";
 
 for my $i (sort {$a cmp $b} keys %hash){
 	print "$i";
