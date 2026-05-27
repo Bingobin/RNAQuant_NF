@@ -9,13 +9,18 @@ my $dir = shift or die $!;
 my %hash;
 my @sam;
 open IN, "$sample" or die $!;
-<IN>;
+my $header = <IN>;
+die "Empty samplesheet: $sample\n" unless defined $header;
+my $sep = ($header =~ /\t/ && $header !~ /,/) ? "\t" : ",";
 while(<IN>){
 	chomp;
-	my @tmp = split /\t/;
+	next unless /\S/;
+	my @tmp = split /\Q$sep\E/;
 	my $id = $tmp[0];
+	$id =~ s/^\s+|\s+$//g;
 	push @sam, $id;
-	open INI, "$dir/$id.count " or die $!;
+	my $count_file = "$dir/$id.count";
+	open INI, $count_file or die "Cannot open count file '$count_file': $!";
 	while(<INI>){
 		chomp;
 #		next if (/^__/);
@@ -40,4 +45,3 @@ for my $i (sort {$a cmp $b} keys %hash){
 	}
 	print "\n";
 }
-

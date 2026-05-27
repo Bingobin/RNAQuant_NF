@@ -5,7 +5,7 @@ workflow REPORT {
     done
 
     main:
-    report = MultiQC(done)
+    report = MultiQC(done.collect())
 
     emit:
     report
