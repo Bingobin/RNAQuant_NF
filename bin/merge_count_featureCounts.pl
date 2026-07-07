@@ -39,7 +39,10 @@ my $samples = join("\t", @sam);
 print "GID\t$samples\n";
 
 for my $i (sort {$a cmp $b} keys %hash){
-	print "$i";
+	my $gid = $i;
+	$gid =~ s/\.[0-9]+$//;
+	next if $gid =~ /PAR/;
+	print "$gid";
 	for my $j (@sam){
 		print "\t$hash{$i}{$j}";
 	}
