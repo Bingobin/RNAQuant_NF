@@ -25,6 +25,7 @@ include { COUNT } from './workflows/count'
 include { MERGE } from './workflows/merge'
 include { REPORT } from './workflows/report'
 include { PREP_BAM } from './workflows/prep_bam'
+include { BAM_TO_BIGWIG } from './modules/bam_to_bigwig'
 
 workflow {
     main:
@@ -46,6 +47,7 @@ workflow {
         input         :  ${params.input}
         outdir        :  ${params.outdir}
         aligner       :  ${params.aligner}
+        bigwig        :  ${params.bigwig}
         """.stripIndent(true)
 
     if (params.skip_align) {
@@ -71,7 +73,12 @@ workflow {
 
         ch_qc = QC(ch_sample)
         ch_align = ALIGN(ch_qc.fastq)
-        ch_count = COUNT(ch_align.bam)
+        ch_bam = ch_align.bam
+        ch_count = COUNT(ch_bam)
+    }
+
+    if (params.bigwig == true) {
+        BAM_TO_BIGWIG(ch_bam)
     }
 
     def input_file = file(params.input)

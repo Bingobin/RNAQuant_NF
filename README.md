@@ -4,7 +4,7 @@ RNA-seq analysis pipeline based on Nextflow (DSL2). It supports QC, read filteri
 
 ## Requirements
 - Nextflow (DSL2)
-- Conda/Singularity/Docker with tools: `fastqc`, `fastp`, `hisat2`, `STAR`, `samtools`, `infer_experiment.py`, `featureCounts`, `multiqc`
+- Conda/Singularity/Docker with tools: `fastqc`, `fastp`, `hisat2`, `STAR`, `samtools`, `infer_experiment.py`, `featureCounts`, `multiqc`, and `bamCoverage` from deepTools
 
 ## Quick Start
 ```bash
@@ -19,6 +19,8 @@ nextflow run main.nf
 - `--aligner` : `star` (default) or `hisat2`
 - `--skip_align` : skip alignment and start from BAMs
 - `--bam_list` : TSV with columns `ID`, `BAM` (required if `--skip_align` is set)
+- `--bigwig` : generate CPM-normalized BigWig files when set to `true` (default: `false`)
+- `--bigwig_bin_size` : BigWig bin size in bp (default: `10`)
 
 ## Samplesheet Format
 ```tsv
@@ -40,6 +42,9 @@ nextflow run main.nf --input /path/to/samplesheet.tsv --ref hsa --aligner star
 
 # Start from BAM
 nextflow run main.nf --skip_align --bam_list /path/to/bam_list.tsv
+
+# Generate CPM-normalized BigWig files
+nextflow run main.nf --input /path/to/samplesheet.tsv --bigwig true
 ```
 
 ## Pipeline Structure
@@ -54,6 +59,7 @@ nextflow run main.nf --skip_align --bam_list /path/to/bam_list.tsv
 - `results/align` : alignment outputs
 - `results/count` : featureCounts outputs
 - `results/merge` : merged count/TPM/FPKM
+- `results/bigwig` : CPM-normalized BigWig files (when `--bigwig true`)
 - `results/reports` : MultiQC reports
 
 ## Notes
